@@ -1,5 +1,6 @@
 package com.pollux.sherpa;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,8 @@ import com.pollux.sherpa.adapter.FlightAdapter;
 import com.pollux.sherpa.io.SherpaClient;
 import com.pollux.sherpa.model.TravelRequest;
 import com.pollux.sherpa.model.TripSearchResponse;
+import com.tooleap.sdk.Tooleap;
+import com.tooleap.sdk.TooleapPopOutMiniApp;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -19,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private RecyclerView flightList;
-
+    public static long miniAppId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Intent intent = new Intent(MainActivity.this, FloatingActivity.class);
+        TooleapPopOutMiniApp miniApp = new TooleapPopOutMiniApp(MainActivity.this, intent);
+        miniApp.contentTitle = "Sherpa";
+        miniApp.notificationText = "Hello! I'm Your Sherpa";
+        miniApp.bubbleBackgroundColor = 0x78FFFFFF;
+        Tooleap tooleap = Tooleap.getInstance(MainActivity.this);
+        tooleap.removeAllMiniApps();
+        miniAppId = tooleap.addMiniApp(miniApp);
+
 
     }
+
+
+
+
 }

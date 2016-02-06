@@ -37,6 +37,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightViewHolder> {
 
             TripSearchResponse.TripOption tripOption = response.trips.tripOption.get(position);
             if(tripOption !=null){
+                final String cost = getCost(tripOption.saleTotal);
                 holder.cost.setText(tripOption.saleTotal);
 
                 if(tripOption.slice != null && tripOption.slice.size() > 0 ){
@@ -70,6 +71,15 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightViewHolder> {
         }
 
 
+    }
+
+    private String getCost(String saleTotal) {
+
+        String[] parts = saleTotal.split("INR");
+        if(parts != null && parts.length > 1){
+            return parts [1] + " " + parts [0];
+        }
+        return "";
     }
 
     @Override

@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:padding="20dp">
 
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/flight_list"
         android:layout_width="match_parent"
@@ -12,3 +13,15 @@
         android:scrollbars="vertical" />
 
 </LinearLayout>
+
+
+    <!--<Button-->
+        <!--style="?android:attr/buttonStyleSmall"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Service : OFF"-->
+        <!--android:id="@+id/service_switch1"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_centerHorizontal="true"/>-->
+<!--</RelativeLayout>-->
+
