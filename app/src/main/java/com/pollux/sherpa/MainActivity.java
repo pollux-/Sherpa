@@ -1,64 +1,31 @@
 package com.pollux.sherpa;
 
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
-import com.pollux.sherpa.adapter.FlightAdapter;
-import com.pollux.sherpa.io.SherpaClient;
-import com.pollux.sherpa.model.TravelRequest;
-import com.pollux.sherpa.model.TripSearchResponse;
+import com.pollux.sherpa.fragment.FlightFragment;
+import com.pollux.sherpa.fragment.PlaceFragment;
 import com.tooleap.sdk.Tooleap;
 import com.tooleap.sdk.TooleapPopOutMiniApp;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private RecyclerView flightList;
+    public static final int PLACE = 100;
+    public static final int FLIGHT = 200;
     public static long miniAppId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        flightList = (RecyclerView) findViewById(R.id.flight_list);
-
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        flightList.setLayoutManager(manager);
-
-        SherpaClient client = new SherpaClient();
-        TravelRequest request = new TravelRequest();
-        TravelRequest.Slice slice = new TravelRequest.Slice();
+        setContentView(R.layout.activity_container);
 
 
-        slice.origin ="BOM";
-        slice.destination="BLR";
-        slice.date ="2016-02-11";
-        request.request.slice.add(slice);
-
-        client.getSherpaServices().getFlightDetails(request, new Callback<TripSearchResponse>() {
-            @Override
-            public void success(TripSearchResponse tripSearchResponse, Response response) {
-
-                Log.d(TAG, "Hello " + tripSearchResponse);
-
-                flightList.setAdapter(new FlightAdapter(MainActivity.this,tripSearchResponse));
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        replaceFragment(PLACE);
 
         Intent intent = new Intent(MainActivity.this, FloatingActivity.class);
         TooleapPopOutMiniApp miniApp = new TooleapPopOutMiniApp(MainActivity.this, intent);
@@ -70,9 +37,30 @@ public class MainActivity extends AppCompatActivity {
         miniAppId = tooleap.addMiniApp(miniApp);
 
 
+
+
     }
 
 
+
+    private void replaceFragment(int type){
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment =null;
+        switch (type){
+
+            case PLACE:
+                fragment = new PlaceFragment();
+                break;
+            case FLIGHT:
+                fragment = new FlightFragment();
+                break;
+        }
+
+        transaction.replace(R.id.container, fragment);
+        transaction.commit();
+
+    }
 
 
 }
