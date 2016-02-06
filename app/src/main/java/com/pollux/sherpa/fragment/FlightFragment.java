@@ -59,12 +59,17 @@ public class FlightFragment extends Fragment {
             @Override
             public void success(TripSearchResponse tripSearchResponse, Response response) {
 
-               flightList.setAdapter(new FlightAdapter(getActivity(),tripSearchResponse));
+                if(getActivity() != null) {
+                    flightList.setAdapter(new FlightAdapter(getActivity(), tripSearchResponse));
+
+                    rootView.findViewById(R.id.progress).setVisibility(View.GONE);
+                }
 
             }
 
             @Override
             public void failure(RetrofitError error) {
+                rootView.findViewById(R.id.progress).setVisibility(View.GONE);
 
             }
         });
