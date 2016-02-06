@@ -1,4 +1,4 @@
-package com.pollux.sharpa;
+package com.pollux.sherpa;
 
 import org.junit.Test;
 
