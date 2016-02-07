@@ -117,6 +117,9 @@ public class PlaceDataResponse {
     }
 
     public class Photos {
+
+        private String photo_reference;
+
         private String[] html_attributions;
 
         public String[] getHtml_attributions() {
@@ -127,6 +130,15 @@ public class PlaceDataResponse {
             this.html_attributions = html_attributions;
         }
 
+        public String getPhotoReference ()
+        {
+            return photo_reference;
+        }
+
+        public void setPhotoReference (String photo_reference)
+        {
+            this.photo_reference = photo_reference;
+        }
     }
 
 }
