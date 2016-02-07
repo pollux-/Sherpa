@@ -19,12 +19,12 @@
         android:id="@+id/info"
         android:background="#E6000000"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:gravity="center"
         android:text="GOA"
         android:layout_gravity="bottom"
         android:alpha="0.5"
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="40dp" />
 </android.support.v7.widget.CardView>
 
