@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Sherpa</string>
+    <string name="title_activity_config">ConfigActivity</string>
 </resources>

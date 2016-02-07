@@ -1,54 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pollux.sherpa">
+<manifest package="com.pollux.sherpa"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
+        android:name=".utils.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".utils.MyApplication"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.pollux.sherpa.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".DetailsActivity">
         </activity>
-        <service android:name=".services.SherpaAccesibility"
-                 android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+
+        <service
+            android:name=".services.SherpaAccesibility"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <meta-data
                 android:name="android.accessibilityservice"
-                android:resource="@xml/accessibilty_info" />
+                android:resource="@xml/accessibilty_info"/>
+
             <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-                <category android:name="android.accessibilityservice.category.FEEDBACK_GENERIC" />
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+
+                <category android:name="android.accessibilityservice.category.FEEDBACK_GENERIC"/>
             </intent-filter>
         </service>
-
-
-        <service android:name="com.tooleap.sdk.TooleapAppService" />
+        <service android:name="com.tooleap.sdk.TooleapAppService"/>
         <service
             android:name="com.tooleap.sdk.TooleapUIService"
             android:exported="true"
-            android:process=":UIService"
-            >
+            android:process=":UIService">
             <intent-filter>
-                <action android:name="com.tooleap.sdk.BIND_UI_SERVICE" />
+                <action android:name="com.tooleap.sdk.BIND_UI_SERVICE"/>
             </intent-filter>
         </service>
-        <activity android:name=".FloatingActivity"
-        android:launchMode="singleInstance"
-        android:taskAffinity=".tooleap">
-            <meta-data android:name="com.tooleap.sdk.theme" android:resource="@android:style/Theme.Light"/>
-        <intent-filter>
-            <action android:name="com.tooleap.sdk.TOOLEAP_SHOW"/>
-        </intent-filter>
+
+        <activity
+            android:name=".FloatingActivity"
+            android:launchMode="singleInstance"
+            android:taskAffinity=".tooleap">
+            <meta-data
+                android:name="com.tooleap.sdk.theme"
+                android:resource="@android:style/Theme.Light"/>
+
+            <intent-filter>
+                <action android:name="com.tooleap.sdk.TOOLEAP_SHOW"/>
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".services.ServiceFloating"
+            android:exported="true"/>
+
+        <activity
+            android:name=".ConfigActivity"
+            android:label="@string/title_activity_config"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
     </application>
 
