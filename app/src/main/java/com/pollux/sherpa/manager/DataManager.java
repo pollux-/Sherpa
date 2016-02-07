@@ -1,7 +1,6 @@
 package com.pollux.sherpa.manager;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 
 import com.pollux.sherpa.io.AirportDataClient;
@@ -10,7 +9,7 @@ import com.pollux.sherpa.io.AlchemyTaxoClient;
 import com.pollux.sherpa.io.PlacesClient;
 import com.pollux.sherpa.model.AirportDataResponse;
 import com.pollux.sherpa.model.AlchemyResponse;
-import com.pollux.sherpa.model.LatLongResponse;
+import com.pollux.sherpa.model.PlaceDataResponse;
 import com.pollux.sherpa.model.TaxoResponse;
 
 import java.util.ArrayList;
@@ -31,11 +30,13 @@ public class DataManager {
     private List<String> citiesList;
     private List<String> eventSearchList;
     private List<String> destinationAirportCodes;
+    private List<PlaceDataResponse.Results> placeDataList;
 
     private DataManager() {
         citiesList = new ArrayList<>();
         eventSearchList = new ArrayList<>();
         destinationAirportCodes = new ArrayList<>();
+        placeDataList = new ArrayList<>();
     }
 
     public static DataManager newInstance(Activity activity) {
@@ -91,16 +92,17 @@ public class DataManager {
     }
 
     public void findCitiesLatLong() {
+        destinationAirportCodes.clear();
         PlacesClient placesClient = new PlacesClient();
         for (int i = 0; i < citiesList.size(); i++) {
-            placesClient.getPlacesServices().getLatLong(citiesList.get(i), new Callback<LatLongResponse>() {
+            placesClient.getPlacesServices().getLatLong(citiesList.get(i), new Callback<PlaceDataResponse>() {
                 @Override
-                public void success(LatLongResponse latLongResponse, Response response) {
+                public void success(PlaceDataResponse placeDataResponse, Response response) {
 
                     final AirportDataClient airportDataClient = new AirportDataClient();
                     airportDataClient.getAirportDataServices()
-                            .getAirportCode(latLongResponse.getResults()[0].getGeometry().getLocation().getLat()
-                                    , latLongResponse.getResults()[0].getGeometry().getLocation().getLng()
+                            .getAirportCode(placeDataResponse.getResults()[0].getGeometry().getLocation().getLat()
+                                    , placeDataResponse.getResults()[0].getGeometry().getLocation().getLng()
                                     , new Callback<AirportDataResponse>() {
                                 @Override
                                 public void success(AirportDataResponse airportDataResponse, Response response) {
@@ -125,5 +127,24 @@ public class DataManager {
         }
     }
 
+    public void searchEvents() {
+        placeDataList.clear();
+        PlacesClient placesClient = new PlacesClient();
+        for (int i = 0; i < eventSearchList.size(); i++) {
+            placesClient.getPlacesServices().getLatLong(eventSearchList.get(i), new Callback<PlaceDataResponse>() {
+                @Override
+                public void success(PlaceDataResponse placeDataResponse, Response response) {
+                    for (PlaceDataResponse.Results singleResults : placeDataResponse.getResults()) {
+                        placeDataList.add(singleResults);
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+        }
+    }
 
 }
