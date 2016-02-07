@@ -25,12 +25,20 @@ import retrofit.client.Response;
 public class DataManager {
 
     private static DataManager sInstance;
-    private static Activity sActivity;
-
     private List<String> citiesList;
     private List<String> eventSearchList;
     private List<String> destinationAirportCodes;
     private List<PlaceDataResponse.Results> placeDataList;
+
+    public interface AnalysisCallback{
+        void onCityFound(List<String> citiesList);
+        void onTaxamonyFound(List<String> eventSearchList);
+        void onEventFound();
+    }
+
+    public interface FlightCodeCallback{
+        void onFlightCodeFound(String code);
+    }
 
     private DataManager() {
         citiesList = new ArrayList<>();
@@ -43,12 +51,11 @@ public class DataManager {
         if (sInstance == null) {
             new DataManager();
         }
-        sActivity = activity;
 
         return sInstance;
     }
 
-    public void doAnalysis(String userInput) {
+    public void doAnalysis(String userInput, final AnalysisCallback callback) {
         citiesList.clear();
         AlchemyClient alchemyClient = new AlchemyClient();
         alchemyClient.getAlchemyServices().checkForPlace(userInput, new Callback<AlchemyResponse>() {
@@ -60,6 +67,8 @@ public class DataManager {
                         citiesList.add(singleEnt.getText());
                     }
                 }
+                if(callback != null)
+                    callback.onCityFound(citiesList);
             }
 
             @Override
@@ -91,7 +100,7 @@ public class DataManager {
         });
     }
 
-    public void findCitiesLatLong() {
+    public void findCitiesLatLong(final FlightCodeCallback callback) {
         destinationAirportCodes.clear();
         PlacesClient placesClient = new PlacesClient();
         for (int i = 0; i < citiesList.size(); i++) {
@@ -108,6 +117,8 @@ public class DataManager {
                                 public void success(AirportDataResponse airportDataResponse, Response response) {
                                     Log.d("tony", "onSuccess");
                                     destinationAirportCodes.add(airportDataResponse.getAirport());
+                                    if(callback != null)
+                                        callback.onFlightCodeFound(airportDataResponse.getAirport());
 
                                 }
 

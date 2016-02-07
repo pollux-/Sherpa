@@ -6,25 +6,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.RadioGroup;
 
 import com.pollux.sherpa.fragment.FlightFragment;
 import com.pollux.sherpa.fragment.PlaceFragment;
-import com.pollux.sherpa.io.AirportDataClient;
-import com.pollux.sherpa.io.AlchemyClient;
-import com.pollux.sherpa.io.PlacesClient;
+import com.pollux.sherpa.manager.DataManager;
 import com.pollux.sherpa.messages.CloseDetails;
-import com.pollux.sherpa.model.AirportDataResponse;
-import com.pollux.sherpa.model.AlchemyResponse;
-import com.pollux.sherpa.model.PlaceDataResponse;
-import com.pollux.sherpa.model.NearbyPlacesResponse;
+
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity implements DataManager.AnalysisCallback{
 
     private static final String TAG = "DetailsActivity";
     public static final int PLACE = 100;
@@ -32,6 +26,7 @@ public class DetailsActivity extends AppCompatActivity {
     public static final String BUNDLE_MESSAGE = "MESSAGE";
     public static long miniAppId = -1;
     private RadioGroup toolbar;
+    private String message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +35,15 @@ public class DetailsActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-            String message = extras.getString(BUNDLE_MESSAGE);
+             message = extras.getString(BUNDLE_MESSAGE);
             Log.d(TAG,"Message :" + message);
+            DataManager.newInstance(this).doAnalysis(message,this);
 
         }
 
-        replaceFragment(PLACE);
-        setListeners();
         EventBus.getDefault().register(this);
+
+
 
 
     }
@@ -103,59 +99,29 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
-    private void alchemyTest() {
-        AlchemyClient alchemyClient = new AlchemyClient();
-        alchemyClient.getAlchemyServices().checkForPlace("lets go to goa", new Callback<AlchemyResponse>() {
-            @Override
-            public void success(AlchemyResponse alchemyVo, Response response) {
-                Log.d("tony", "yea");
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
+    @Override
+    public void onCityFound(List<String> citiesList) {
+        if(citiesList!=null && citiesList.size() > 0){
+            DataManager.newInstance(this).findTaxonomy(message);
+
+        }
+
     }
 
-    private void placesTest() {
-        PlacesClient placesClient = new PlacesClient();
-        placesClient.getPlacesServices().getLatLong("goa", new Callback<PlaceDataResponse>() {
-            @Override
-            public void success(PlaceDataResponse placeDataResponse, Response response) {
+    @Override
+    public void onTaxamonyFound(List<String> eventSearchList) {
+        DataManager.newInstance(this).searchEvents();
 
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-
-        placesClient.getPlacesServices().getNearbyPlaces("15.2993265,74.12399599999999", new Callback<NearbyPlacesResponse>() {
-            @Override
-            public void success(NearbyPlacesResponse nearbyPlacesResponse, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
     }
 
-    private void airportDataTest() {
-        AirportDataClient airportDataClient = new AirportDataClient();
-        airportDataClient.getAirportDataServices().getAirportCode("15.2993265", "74.12399599999999", new Callback<AirportDataResponse>() {
-            @Override
-            public void success(AirportDataResponse airportDataResponse, Response response) {
-                Log.d("tony", "onSuccess");
-            }
+    @Override
+    public void onEventFound() {
+        replaceFragment(FLIGHT);
+        setListeners();
+        findViewById(R.id.progress).setVisibility(View.GONE);
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d("tony", "onFail");
-            }
-        });
+
     }
 }

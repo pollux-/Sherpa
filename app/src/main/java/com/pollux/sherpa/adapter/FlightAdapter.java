@@ -10,15 +10,17 @@ import com.pollux.sherpa.R;
 import com.pollux.sherpa.model.TripSearchResponse;
 import com.pollux.sherpa.utils.Util;
 
+import java.util.List;
+
 /**
  * Created by SPARK on 07/02/16.
  */
 public class FlightAdapter extends RecyclerView.Adapter<FlightViewHolder> {
 
     private LayoutInflater inflater;
-    private TripSearchResponse  response;
+    private List<TripSearchResponse.TripOption> response;
 
-    public FlightAdapter(Context context, TripSearchResponse response) {
+    public FlightAdapter(Context context, List<TripSearchResponse.TripOption> response) {
         this.inflater = LayoutInflater.from(context);
         this.response = response;
 
@@ -33,9 +35,9 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightViewHolder> {
     @Override
     public void onBindViewHolder(FlightViewHolder holder, int position) {
 
-        if(response!= null && response.trips!=null && response.trips.tripOption!= null && response.trips.tripOption.size() > 0){
 
-            TripSearchResponse.TripOption tripOption = response.trips.tripOption.get(position);
+
+            TripSearchResponse.TripOption tripOption = response.get(position);
             if(tripOption !=null){
                 final String cost = getCost(tripOption.saleTotal);
                 holder.cost.setText(cost);
@@ -65,7 +67,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightViewHolder> {
                 }
 
 
-            }
+
 
 
         }
@@ -85,8 +87,8 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightViewHolder> {
     @Override
     public int getItemCount() {
 
-        if(response != null && response.trips !=null && response.trips.tripOption !=null)
-        return response.trips.tripOption.size();
+        if(response != null )
+        return response.size();
         return 0;
     }
 }
