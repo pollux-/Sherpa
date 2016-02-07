@@ -35,4 +35,5 @@ dependencies {
     compile 'com.flipkart.springyheads:library:0.9.6'
     compile 'com.android.support:design:23.1.1'
     compile 'com.txusballesteros:bubbles:1.2.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

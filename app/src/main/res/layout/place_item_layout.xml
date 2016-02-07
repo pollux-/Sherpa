@@ -19,7 +19,7 @@
         android:id="@+id/info"
         android:background="#E6000000"
         android:textColor="@android:color/white"
-        android:textSize="22sp"
+        android:textSize="16sp"
         android:gravity="center"
         android:text="GOA"
         android:layout_gravity="bottom"

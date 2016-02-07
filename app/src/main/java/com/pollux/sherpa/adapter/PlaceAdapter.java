@@ -37,6 +37,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.RVHolder> {
     @Override
     public void onBindViewHolder(PlaceAdapter.RVHolder holder, int position) {
         holder.nameTv.setText(response.get(position).getName());
+      // Picasso.with( holder.nameTv.getContext()).load()
+
 
     }
 
