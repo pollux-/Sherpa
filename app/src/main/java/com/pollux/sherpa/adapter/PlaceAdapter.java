@@ -19,13 +19,20 @@ import java.util.List;
  */
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.RVHolder> {
 
+    public interface IPlaceShare{
+        void onPlaceShare(View shareview);
+    }
+
     private LayoutInflater inflater;
     private List<PlaceDataResponse.Results> response;
     private static final String PHOTO_BASE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&key=AIzaSyAOFqhu6CSeTQkTEsGiq670YOz0SaLd2sg";
 
-    public PlaceAdapter(Context context, List<PlaceDataResponse.Results> response) {
+    private IPlaceShare iPlaceShare;
+
+    public PlaceAdapter(Context context, List<PlaceDataResponse.Results> response,IPlaceShare iPlaceShare) {
         this.inflater = LayoutInflater.from(context);
         this.response = response;
+        this.iPlaceShare = iPlaceShare;
 
     }
 
@@ -43,6 +50,15 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.RVHolder> {
         if(photos !=null && photos.length > 0)
         Picasso.with(holder.nameTv.getContext()).load(PHOTO_BASE_URL+"&photoreference=" + photos[0].getPhotoReference()).into(holder.placeIv);
 
+        holder.share.setTag(holder.itemView);
+        holder.share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View shareView = (View) v.getTag();
+                iPlaceShare.onPlaceShare(shareView);
+            }
+        });
+
     }
 
 
@@ -55,11 +71,13 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.RVHolder> {
 
         ImageView placeIv;
         TextView nameTv;
+        ImageView share;
 
         public RVHolder(View itemView) {
             super(itemView);
 
             placeIv = (ImageView) itemView.findViewById(R.id.bg_image);
+            share = (ImageView) itemView.findViewById(R.id.share);
             nameTv = (TextView) itemView.findViewById(R.id.info);
 
         }

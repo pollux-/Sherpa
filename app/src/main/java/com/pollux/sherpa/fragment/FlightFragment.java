@@ -97,6 +97,8 @@ public class FlightFragment extends Fragment implements DataManager.FlightCodeCa
                     rootView.findViewById(R.id.progress).setVisibility(View.GONE);
                 }
 
+
+
             }
 
             @Override

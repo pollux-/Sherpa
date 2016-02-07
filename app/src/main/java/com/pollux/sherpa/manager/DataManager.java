@@ -75,6 +75,7 @@ public class DataManager {
                 }
                 if (callback != null)
                     callback.onCityFound(citiesList);
+
             }
 
             @Override
