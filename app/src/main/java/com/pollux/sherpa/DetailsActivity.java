@@ -13,45 +13,41 @@ import com.pollux.sherpa.fragment.PlaceFragment;
 import com.pollux.sherpa.io.AirportDataClient;
 import com.pollux.sherpa.io.AlchemyClient;
 import com.pollux.sherpa.io.PlacesClient;
+import com.pollux.sherpa.messages.CloseDetails;
 import com.pollux.sherpa.model.AirportDataResponse;
 import com.pollux.sherpa.model.AlchemyResponse;
 import com.pollux.sherpa.model.LatLongResponse;
 import com.pollux.sherpa.model.NearbyPlacesResponse;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import com.pollux.sherpa.messages.CloseDetails;
-
-import de.greenrobot.event.EventBus;
 
 public class DetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailsActivity";
     public static final int PLACE = 100;
     public static final int FLIGHT = 200;
+    public static final String BUNDLE_MESSAGE = "MESSAGE";
     public static long miniAppId = -1;
-    private RadioGroup radioGroup;
+    private RadioGroup toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
-        EventBus.getDefault().register(this);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            String message = extras.getString(BUNDLE_MESSAGE);
+            Log.d(TAG,"Message :" + message);
+
+        }
 
         replaceFragment(PLACE);
         setListeners();
-
-
-       /*  Intent intent = new Intent(DetailsActivity.this, FloatingActivity.class);
-       TooleapPopOutMiniApp miniApp = new TooleapPopOutMiniApp(DetailsActivity.this, intent);
-        miniApp.contentTitle = "Sherpa";
-        miniApp.notificationText = "Hello! I'm Your Sherpa";
-        miniApp.bubbleBackgroundColor = 0x78FFFFFF;
-        Tooleap tooleap = Tooleap.getInstance(DetailsActivity.this);
-        tooleap.removeAllMiniApps();
-        miniAppId = tooleap.addMiniApp(miniApp);*/
+        EventBus.getDefault().register(this);
 
 
     }
@@ -68,10 +64,10 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void setListeners() {
 
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup1);
+        toolbar = (RadioGroup) findViewById(R.id.radioGroup1);
 
         // Checked change Listener for RadioGroup 1
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        toolbar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {

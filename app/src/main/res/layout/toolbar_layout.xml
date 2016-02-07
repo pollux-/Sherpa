@@ -38,6 +38,17 @@
             android:padding="5dp"
             android:text="Flights"
             android:textColor="@drawable/radio_txt_selector" />
+        <RadioButton
+            android:id="@+id/coupons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radio_button_selector"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Coupons"
+            android:textColor="@drawable/radio_txt_selector" />
 
 
     </RadioGroup>

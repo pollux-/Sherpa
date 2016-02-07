@@ -9,52 +9,38 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
 
 import com.pollux.sherpa.DetailsActivity;
 import com.pollux.sherpa.R;
 import com.pollux.sherpa.messages.CloseDetails;
+import com.pollux.sherpa.messages.UserMessage;
 import com.pollux.sherpa.utils.MyApplication;
 import com.txusballesteros.bubbles.BubbleLayout;
 import com.txusballesteros.bubbles.BubblesManager;
 import com.txusballesteros.bubbles.OnInitializedCallback;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.greenrobot.event.EventBus;
 
-public class ServiceFloating extends Service implements BubbleLayout.OnBubbleClickListener
-{
+public class ServiceFloating extends Service implements BubbleLayout.OnBubbleClickListener {
 
     final static String TAG = ServiceFloating.class.getSimpleName();
-    public static int ID_NOTIFICATION = 2018;
-    boolean mHasDoubleClicked = false;
-    long lastPressTime;
-    ArrayList<String> myArray;
-    List listCity;
-    private WindowManager windowManager;
-    private ImageView chatHead;
-    private PopupWindow pwindo;
-    private Boolean _enable = false;
-    WindowManager.LayoutParams params;
-    BubbleLayout bubbleView;
+
+    private Boolean enable = false;
+    private WindowManager.LayoutParams params;
+    private BubbleLayout bubbleView;
+
     @Override
-    public IBinder onBind(Intent intent)
-    {
+    public IBinder onBind(Intent intent) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         initializeBubblesManager();
-
+        EventBus.getDefault().register(this);
         /*super.onCreate();
         Log.d(TAG,"SERVICE STARTED") ;
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -142,8 +128,9 @@ public class ServiceFloating extends Service implements BubbleLayout.OnBubbleCli
     }
 
     private BubblesManager bubblesManager;
+
     private void addNewBubble() {
-        if(bubbleView!=null) return; //only one bubble at a time
+        if (bubbleView != null) return; //only one bubble at a time
         bubbleView = (BubbleLayout) LayoutInflater.from(getApplicationContext()).inflate(R.layout.bubble_layout, null);
         bubbleView.setOnBubbleRemoveListener(new BubbleLayout.OnBubbleRemoveListener() {
             @Override
@@ -160,7 +147,7 @@ public class ServiceFloating extends Service implements BubbleLayout.OnBubbleCli
     }
 
     private void initializeBubblesManager() {
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+
         params = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.TYPE_PHONE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
         params.x = 0;
         params.y = 20;
@@ -176,52 +163,55 @@ public class ServiceFloating extends Service implements BubbleLayout.OnBubbleCli
         bubblesManager.initialize();
     }
 
-
-   /* private void launchDetails()
-    {
-        if(_enable)
-        {
-            EventBus.getDefault().post(new CloseDetails());
-
-            _enable = false;
-        }
-        else
-        {
-            params.gravity = Gravity.TOP | Gravity.LEFT;
-            params.x = 0;
-            params.y = 100;
-            windowManager.updateViewLayout(chatHead, params);
-            Intent mIntent = new Intent(MyApplication.context, DetailsActivity.class);
-            mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(mIntent);
-
-            _enable = true;
-
-        }
+    public void onEvent(UserMessage msg) {
+        openActivity(msg.getMessage());
     }
 
+    /* private void launchDetails()
+     {
+         if(enable)
+         {
+             EventBus.getDefault().post(new CloseDetails());
 
-    private void initiatePopupWindow(View anchor)
-    {
-        try
-        {
-            Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-            ListPopupWindow popup = new ListPopupWindow(this);
-            popup.setAnchorView(anchor);
-            popup.setWidth((int) (display.getWidth() / (1.5)));
-            //ArrayAdapter<String> arrayAdapter =
-            //new ArrayAdapter<String>(this,R.layout.list_item, myArray);
+             enable = false;
+         }
+         else
+         {
+             params.gravity = Gravity.TOP | Gravity.LEFT;
+             params.x = 0;
+             params.y = 100;
+             windowManager.updateViewLayout(chatHead, params);
+             Intent mIntent = new Intent(MyApplication.context, DetailsActivity.class);
+             mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+             startActivity(mIntent);
+
+             enable = true;
+
+         }
+     }
 
 
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+     private void initiatePopupWindow(View anchor)
+     {
+         try
+         {
+             Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+             ListPopupWindow popup = new ListPopupWindow(this);
+             popup.setAnchorView(anchor);
+             popup.setWidth((int) (display.getWidth() / (1.5)));
+             //ArrayAdapter<String> arrayAdapter =
+             //new ArrayAdapter<String>(this,R.layout.list_item, myArray);
 
-    public void createNotification()
-    {
-       *//* Intent notificationIntent = new Intent(getApplicationContext(), ServiceFloating.class);
+
+         } catch (Exception e)
+         {
+             e.printStackTrace();
+         }
+     }
+
+     public void createNotification()
+     {
+        *//* Intent notificationIntent = new Intent(getApplicationContext(), ServiceFloating.class);
         PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, notificationIntent, 0);
 
         Notification notification = new Notification(R.mipmap.floating_icon, "Click to start launcher",System.currentTimeMillis());
@@ -234,43 +224,36 @@ public class ServiceFloating extends Service implements BubbleLayout.OnBubbleCli
     }
 */
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
 
         bubblesManager.recycle();
         super.onDestroy();
 //        if (chatHead != null) windowManager.removeView(chatHead);
     }
 
-    int oldx = 0,oldy=20;
+    int oldx = 0, oldy = 20;
+
     @Override
-    public void onBubbleClick(BubbleLayout bubble)
-    {
-        Log.d(TAG,"Clicked");
-        if(_enable)
-        {
+    public void onBubbleClick(BubbleLayout bubble) {
+        Log.d(TAG, "Clicked");
+        openActivity("GOA");
+
+    }
+
+    void openActivity(String text) {
+        if (enable) {
             EventBus.getDefault().post(new CloseDetails());
 
-           params.x = oldx;
-           params.y = oldy;
-            windowManager.updateViewLayout(bubble,params);
-            _enable = false;
-        }
-        else
-        {
+            enable = false;
+        } else {
 
-            oldx = params.x;
-            oldy = params.y;
-            params.gravity = Gravity.TOP | Gravity.LEFT;
-            params.x = 0;
-            params.y = 10;
-            windowManager.updateViewLayout(bubble, params);
             Intent mIntent = new Intent(MyApplication.context, DetailsActivity.class);
+            mIntent.putExtra(DetailsActivity.BUNDLE_MESSAGE, text);
             mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(mIntent);
             /*bubbleView.setX(0);
             bubbleView.setX(20);*/
-            _enable = true;
+            enable = true;
 
         }
     }

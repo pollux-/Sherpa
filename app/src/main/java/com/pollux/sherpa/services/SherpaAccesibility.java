@@ -10,10 +10,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityRecord;
 import android.widget.TextView;
 
-import com.pollux.sherpa.DetailsActivity;
 import com.pollux.sherpa.messages.UserMessage;
-import com.tooleap.sdk.Tooleap;
-import com.tooleap.sdk.TooleapMiniApp;
 
 import java.util.ArrayList;
 
@@ -158,15 +155,7 @@ public class SherpaAccesibility extends AccessibilityService
             Log.d(tag, ussd_details);
             Log.d(tag, text.toString());
             Log.d(tag, message);
-        Tooleap tooleap = Tooleap.getInstance(this);
-        TooleapMiniApp miniApp = tooleap.getMiniApp(DetailsActivity.miniAppId);
-        miniApp.notificationText = message;
-        tooleap.updateMiniAppAndNotify(DetailsActivity.miniAppId, miniApp);
-        EventBus.getDefault().post(new UserMessage(message));
-    }
-    public void onEvent()
-    {
-
+        EventBus.getDefault().postSticky(new UserMessage(message));
     }
     public void getTextFromNode(AccessibilityNodeInfo accessibilityNodeInfo)
     {
