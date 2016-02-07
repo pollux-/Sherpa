@@ -1,6 +1,5 @@
 package com.pollux.sherpa.manager;
 
-import android.app.Activity;
 import android.util.Log;
 
 import com.pollux.sherpa.io.AirportDataClient;
@@ -47,9 +46,9 @@ public class DataManager {
         placeDataList = new ArrayList<>();
     }
 
-    public static DataManager newInstance(Activity activity) {
+    public static DataManager newInstance() {
         if (sInstance == null) {
-            new DataManager();
+            sInstance = new DataManager();
         }
 
         return sInstance;
@@ -78,7 +77,7 @@ public class DataManager {
         });
     }
 
-    public void findTaxonomy(String userInput) {
+    public void findTaxonomy(String userInput, final AnalysisCallback callback) {
         eventSearchList.clear();
         AlchemyTaxoClient alchemyTaxoClient = new AlchemyTaxoClient();
         alchemyTaxoClient.getAlchemyTaxoServices().getSentimentTaxonomy(userInput, new Callback<TaxoResponse>() {
@@ -90,6 +89,8 @@ public class DataManager {
                     for (int i = 0; i < citiesList.size(); i++) {
                         eventSearchList.add(actions[0] + " and " + actions[1] + " in " + citiesList.get(i));
                     }
+                    if(callback != null)
+                    callback.onTaxamonyFound(eventSearchList);
                 }
             }
 
@@ -138,7 +139,7 @@ public class DataManager {
         }
     }
 
-    public void searchEvents() {
+    public void searchEvents(final AnalysisCallback analysisCallback) {
         placeDataList.clear();
         PlacesClient placesClient = new PlacesClient();
         for (int i = 0; i < eventSearchList.size(); i++) {
@@ -147,6 +148,10 @@ public class DataManager {
                 public void success(PlaceDataResponse placeDataResponse, Response response) {
                     for (PlaceDataResponse.Results singleResults : placeDataResponse.getResults()) {
                         placeDataList.add(singleResults);
+
+                    }
+                    if(analysisCallback!=null){
+                        analysisCallback.onEventFound();
                     }
                 }
 

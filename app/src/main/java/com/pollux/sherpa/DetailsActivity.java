@@ -24,7 +24,6 @@ public class DetailsActivity extends AppCompatActivity implements DataManager.An
     public static final int PLACE = 100;
     public static final int FLIGHT = 200;
     public static final String BUNDLE_MESSAGE = "MESSAGE";
-    public static long miniAppId = -1;
     private RadioGroup toolbar;
     private String message;
 
@@ -37,7 +36,7 @@ public class DetailsActivity extends AppCompatActivity implements DataManager.An
         if(extras != null){
              message = extras.getString(BUNDLE_MESSAGE);
             Log.d(TAG,"Message :" + message);
-            DataManager.newInstance(this).doAnalysis(message,this);
+            DataManager.newInstance().doAnalysis(message,this);
 
         }
 
@@ -103,7 +102,7 @@ public class DetailsActivity extends AppCompatActivity implements DataManager.An
     @Override
     public void onCityFound(List<String> citiesList) {
         if(citiesList!=null && citiesList.size() > 0){
-            DataManager.newInstance(this).findTaxonomy(message);
+            DataManager.newInstance().findTaxonomy(message,this);
 
         }
 
@@ -111,7 +110,7 @@ public class DetailsActivity extends AppCompatActivity implements DataManager.An
 
     @Override
     public void onTaxamonyFound(List<String> eventSearchList) {
-        DataManager.newInstance(this).searchEvents();
+        DataManager.newInstance().searchEvents(this);
 
 
     }

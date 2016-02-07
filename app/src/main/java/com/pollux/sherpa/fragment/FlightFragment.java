@@ -54,7 +54,7 @@ public class FlightFragment extends Fragment implements DataManager.FlightCodeCa
         flightList.setLayoutManager(manager);
 
 
-        DataManager.newInstance(getActivity()).findCitiesLatLong(this);
+        DataManager.newInstance().findCitiesLatLong(this);
 
 
     }
