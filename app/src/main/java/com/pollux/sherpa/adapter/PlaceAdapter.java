@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.pollux.sherpa.R;
 import com.pollux.sherpa.model.PlaceDataResponse;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.RVHolder> {
 
     private LayoutInflater inflater;
     private List<PlaceDataResponse.Results> response;
+    private static final String PHOTO_BASE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&key=AIzaSyAOFqhu6CSeTQkTEsGiq670YOz0SaLd2sg";
 
     public PlaceAdapter(Context context, List<PlaceDataResponse.Results> response) {
         this.inflater = LayoutInflater.from(context);
@@ -37,6 +39,9 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.RVHolder> {
     @Override
     public void onBindViewHolder(PlaceAdapter.RVHolder holder, int position) {
         holder.nameTv.setText(response.get(position).getName());
+        PlaceDataResponse.Photos[] photos = response.get(position).getPhotos();
+        if(photos !=null && photos.length > 0)
+        Picasso.with(holder.nameTv.getContext()).load(PHOTO_BASE_URL+"&photoreference=" + photos[0].getPhotoReference()).into(holder.placeIv);
 
     }
 

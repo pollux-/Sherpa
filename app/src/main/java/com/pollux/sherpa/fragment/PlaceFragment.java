@@ -36,5 +36,7 @@ public class PlaceFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         placeList.setLayoutManager(manager);
         placeList.setAdapter(new PlaceAdapter(getActivity(), DataManager.newInstance().getPlaceDataList()));
+        rootView.findViewById(R.id.progress).setVisibility(View.GONE);
+
     }
 }
