@@ -18,7 +18,7 @@ import retrofit.http.Query;
  * Created by SPARK on 06/02/16.
  */
 public interface SherpaEndpoint {
-    @POST("/search?key=AIzaSyDlo9wpADi9DWnRZdoIMh6NuKzCVb3Wq0A")
+    @POST("/search?key=AIzaSyD0Veflv-4fU7ycJijc-0s9o52U97BobCU")
     void getFlightDetails(@Body TravelRequest user, Callback<TripSearchResponse> responseCallback);
 
     @GET("/text/TextGetRankedNamedEntities?outputMode=json&apikey=21285e461cb36450a7d40b28aaa992564dd1a7bf")
@@ -35,5 +35,9 @@ public interface SherpaEndpoint {
 
     @GET("/nearest-relevant?apikey=NAowoC2E8Xm0qKHmBKGb0wjr5ZbiqGVs")
     void getAirportCode(@Query("latitude") String latitude, @Query("longitude") String longitude
-            , Callback<AirportDataResponse> responseCallback);
+            , Callback<AirportDataResponse[]> responseCallback);
+
+    @GET("/api/tweets")
+    void getSentiment(@Query("query") String place
+            , Callback<retrofit.client.Response> responseCallback);
 }

@@ -2,6 +2,7 @@ package com.pollux.sherpa.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pollux.sherpa.R;
+import com.pollux.sherpa.messages.SentimentalMessage;
 import com.pollux.sherpa.model.PlaceDataResponse;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by SPARK on 07/02/16.
@@ -34,8 +38,20 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.RVHolder> {
         this.response = response;
         this.iPlaceShare = iPlaceShare;
 
-    }
+        EventBus.getDefault().register(this);
 
+
+    }
+    public void onEvent(SentimentalMessage message)
+    {
+        Log.d("TWITTER","Got Sentimental Message");
+    }
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView)
+    {
+        EventBus.getDefault().unregister(this);
+        super.onDetachedFromRecyclerView(recyclerView);
+    }
 
     @Override
     public RVHolder onCreateViewHolder(ViewGroup parent, int viewType) {

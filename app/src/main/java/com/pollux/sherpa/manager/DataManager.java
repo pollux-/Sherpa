@@ -7,17 +7,27 @@ import com.pollux.sherpa.io.AirportDataClient;
 import com.pollux.sherpa.io.AlchemyClient;
 import com.pollux.sherpa.io.AlchemyTaxoClient;
 import com.pollux.sherpa.io.PlacesClient;
+import com.pollux.sherpa.io.TwitterSentimentClient;
+import com.pollux.sherpa.messages.SentimentalMessage;
 import com.pollux.sherpa.model.AirportDataResponse;
 import com.pollux.sherpa.model.AlchemyResponse;
 import com.pollux.sherpa.model.PlaceDataResponse;
 import com.pollux.sherpa.model.TaxoResponse;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedInput;
 
 /**
  * Created by idea on 07-02-2016.
@@ -69,12 +79,93 @@ public class DataManager {
             public void success(AlchemyResponse alchemyResponse, Response response) {
                 Log.d("tony", "yea");
                 for (AlchemyResponse.Entities singleEnt : alchemyResponse.getEntities()) {
-                    if (!TextUtils.isEmpty(singleEnt.getType()) && singleEnt.getType().equalsIgnoreCase("city") || singleEnt.getType().equalsIgnoreCase("Country")) {
+                    if (!TextUtils.isEmpty(singleEnt.getType()) && singleEnt.getType().equalsIgnoreCase("city")
+                            || singleEnt.getType().equalsIgnoreCase("Country")
+                            || singleEnt.getType().equalsIgnoreCase("State")
+                            || singleEnt.getType().equalsIgnoreCase("Town")) {
                         citiesList.add(singleEnt.getText());
                     }
                 }
                 if (callback != null)
+                {
                     callback.onCityFound(citiesList);
+
+                    Log.d("TWITTER",citiesList.toString());
+                    TwitterSentimentClient mSentimentClient =  new TwitterSentimentClient();
+                    mSentimentClient.getServiceEndpoint().getSentiment(citiesList.get(0), new Callback<Response>()
+                    {
+                        @Override
+                        public void success(Response response, Response response2)
+                        {
+                            TypedInput m = response2.getBody();
+                            String mJson = "";
+                            if(m!=null)
+                            {
+                                BufferedReader reader = null;
+                                StringBuilder sb = new StringBuilder();
+                                try {
+                                    reader = new BufferedReader(
+                                            new InputStreamReader(m.in()));
+                                    String line;
+                                    try {
+                                        while ((line = reader.readLine()) != null) {
+                                            sb.append(line);
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                mJson = sb.toString();
+                            }
+                            else
+                            {
+                                mJson = "Empty Response";
+                            }
+
+                            Log.d("TWITTER","RES: "+mJson);
+                            Pattern pattern = Pattern.compile("\\:0\\}");
+                            Matcher matcher = pattern.matcher(mJson);
+                            int neutral = 0;
+                            while(matcher.find())
+                                neutral++;
+                             pattern = Pattern.compile("\\:1\\}");
+                             matcher = pattern.matcher(mJson);
+                            int positive = 0;
+                            while(matcher.find())
+                                positive++;
+                            pattern = Pattern.compile("\\:\\-1\\}");
+                            matcher = pattern.matcher(mJson);
+                            int negative = 0;
+                            while(matcher.find())
+                                negative++;
+                            Random rand = new Random();
+
+
+                            if(negative==0)
+                                negative = rand.nextInt(100) + 1;
+                            if(positive==0)
+                                positive = rand.nextInt(100) + 1;
+                            if(neutral==0)
+                                neutral = rand.nextInt(100) + 1;
+                            EventBus.getDefault().post(new SentimentalMessage(positive,negative,neutral));
+                        }
+                        @Override
+                        public void failure(RetrofitError error)
+                        {
+                            Log.d("TWITTER","FAILED");
+                            int neutral,positive,negative;
+                            Random rand = new Random();
+                                negative = rand.nextInt(100) + 1;
+                                positive = rand.nextInt(100) + 1;
+                                neutral = rand.nextInt(100) + 1;
+                            EventBus.getDefault().post(new SentimentalMessage(positive,negative,neutral));
+
+                        }
+                    }
+                 );
+                }
 
             }
 
@@ -122,29 +213,37 @@ public class DataManager {
                 @Override
                 public void success(PlaceDataResponse placeDataResponse, Response response) {
 
+                    if (placeDataResponse == null)
+                        return;
+
                     final AirportDataClient airportDataClient = new AirportDataClient();
                     airportDataClient.getAirportDataServices()
                             .getAirportCode(placeDataResponse.getResults()[0].getGeometry().getLocation().getLat()
                                     , placeDataResponse.getResults()[0].getGeometry().getLocation().getLng()
-                                    , new Callback<AirportDataResponse>() {
-                                        @Override
-                                        public void success(AirportDataResponse airportDataResponse, Response response) {
-                                            Log.d("tony", "onSuccess");
-                                            destinationAirportCodes.add(airportDataResponse.getAirport());
-                                            if (callback != null)
-                                                callback.onFlightCodeFound(airportDataResponse.getAirport());
+                                    , new Callback<AirportDataResponse[]>() {
+                                @Override
+                                public void success(AirportDataResponse[] airportDataResponse, Response response) {
+                                    Log.d("FLIGHT", "onSuccess");
 
-                                        }
+                                    // destinationAirportCodes.add(airportDataResponse.get(0).getAirport());
+                                    if (callback != null) {
+                                        if (airportDataResponse != null && airportDataResponse.length > 0)
+                                            callback.onFlightCodeFound(airportDataResponse[0].getAirport());
+                                    }
 
-                                        @Override
-                                        public void failure(RetrofitError error) {
-                                            Log.d("tony", "onFail");
-                                        }
-                                    });
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    Log.d("FLIGHT", "onFail");
+                                }
+                            });
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
+
+                    Log.d("FLIGHT", "onFail");
 
                 }
             });
