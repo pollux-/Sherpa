@@ -2,8 +2,8 @@ package com.pollux.sherpa.io;
 
 import com.pollux.sherpa.model.AirportDataResponse;
 import com.pollux.sherpa.model.AlchemyResponse;
-import com.pollux.sherpa.model.PlaceDataResponse;
 import com.pollux.sherpa.model.NearbyPlacesResponse;
+import com.pollux.sherpa.model.PlaceDataResponse;
 import com.pollux.sherpa.model.TaxoResponse;
 import com.pollux.sherpa.model.TravelRequest;
 import com.pollux.sherpa.model.TripSearchResponse;
@@ -36,4 +36,8 @@ public interface SherpaEndpoint {
     @GET("/nearest-relevant?apikey=NAowoC2E8Xm0qKHmBKGb0wjr5ZbiqGVs")
     void getAirportCode(@Query("latitude") String latitude, @Query("longitude") String longitude
             , Callback<AirportDataResponse> responseCallback);
+
+    @GET("/api/tweets")
+    void getSentiment(@Query("query") String place
+            , Callback<retrofit.client.Response> responseCallback);
 }
