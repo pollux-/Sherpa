@@ -18,7 +18,7 @@ import retrofit.http.Query;
  * Created by SPARK on 06/02/16.
  */
 public interface SherpaEndpoint {
-    @POST("/search?key=AIzaSyDlo9wpADi9DWnRZdoIMh6NuKzCVb3Wq0A")
+    @POST("/search?key=AIzaSyAOFqhu6CSeTQkTEsGiq670YOz0SaLd2sg")
     void getFlightDetails(@Body TravelRequest user, Callback<TripSearchResponse> responseCallback);
 
     @GET("/text/TextGetRankedNamedEntities?outputMode=json&apikey=21285e461cb36450a7d40b28aaa992564dd1a7bf")
