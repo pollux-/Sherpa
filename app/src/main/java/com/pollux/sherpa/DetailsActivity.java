@@ -16,7 +16,7 @@ import com.pollux.sherpa.io.PlacesClient;
 import com.pollux.sherpa.messages.CloseDetails;
 import com.pollux.sherpa.model.AirportDataResponse;
 import com.pollux.sherpa.model.AlchemyResponse;
-import com.pollux.sherpa.model.LatLongResponse;
+import com.pollux.sherpa.model.PlaceDataResponse;
 import com.pollux.sherpa.model.NearbyPlacesResponse;
 
 import de.greenrobot.event.EventBus;
@@ -119,9 +119,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void placesTest() {
         PlacesClient placesClient = new PlacesClient();
-        placesClient.getPlacesServices().getLatLong("goa", new Callback<LatLongResponse>() {
+        placesClient.getPlacesServices().getLatLong("goa", new Callback<PlaceDataResponse>() {
             @Override
-            public void success(LatLongResponse latLongResponse, Response response) {
+            public void success(PlaceDataResponse placeDataResponse, Response response) {
 
             }
 
