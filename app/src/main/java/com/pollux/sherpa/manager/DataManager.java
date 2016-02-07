@@ -79,7 +79,10 @@ public class DataManager {
             public void success(AlchemyResponse alchemyResponse, Response response) {
                 Log.d("tony", "yea");
                 for (AlchemyResponse.Entities singleEnt : alchemyResponse.getEntities()) {
-                    if (!TextUtils.isEmpty(singleEnt.getType()) && singleEnt.getType().equalsIgnoreCase("city") || singleEnt.getType().equalsIgnoreCase("Country")) {
+                    if (!TextUtils.isEmpty(singleEnt.getType()) && singleEnt.getType().equalsIgnoreCase("city")
+                            || singleEnt.getType().equalsIgnoreCase("Country")
+                            || singleEnt.getType().equalsIgnoreCase("State")
+                            || singleEnt.getType().equalsIgnoreCase("Town")) {
                         citiesList.add(singleEnt.getText());
                     }
                 }
@@ -208,29 +211,37 @@ public class DataManager {
                 @Override
                 public void success(PlaceDataResponse placeDataResponse, Response response) {
 
+                    if (placeDataResponse == null)
+                        return;
+
                     final AirportDataClient airportDataClient = new AirportDataClient();
                     airportDataClient.getAirportDataServices()
                             .getAirportCode(placeDataResponse.getResults()[0].getGeometry().getLocation().getLat()
                                     , placeDataResponse.getResults()[0].getGeometry().getLocation().getLng()
-                                    , new Callback<AirportDataResponse>() {
-                                        @Override
-                                        public void success(AirportDataResponse airportDataResponse, Response response) {
-                                            Log.d("tony", "onSuccess");
-                                            destinationAirportCodes.add(airportDataResponse.getAirport());
-                                            if (callback != null)
-                                                callback.onFlightCodeFound(airportDataResponse.getAirport());
+                                    , new Callback<AirportDataResponse[]>() {
+                                @Override
+                                public void success(AirportDataResponse[] airportDataResponse, Response response) {
+                                    Log.d("FLIGHT", "onSuccess");
 
-                                        }
+                                    // destinationAirportCodes.add(airportDataResponse.get(0).getAirport());
+                                    if (callback != null) {
+                                        if (airportDataResponse != null && airportDataResponse.length > 0)
+                                            callback.onFlightCodeFound(airportDataResponse[0].getAirport());
+                                    }
 
-                                        @Override
-                                        public void failure(RetrofitError error) {
-                                            Log.d("tony", "onFail");
-                                        }
-                                    });
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    Log.d("FLIGHT", "onFail");
+                                }
+                            });
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
+
+                    Log.d("FLIGHT", "onFail");
 
                 }
             });

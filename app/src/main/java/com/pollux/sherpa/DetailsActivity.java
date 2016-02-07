@@ -103,7 +103,12 @@ public class DetailsActivity extends AppCompatActivity implements DataManager.An
     public void onCityFound(List<String> citiesList) {
         if(citiesList!=null && citiesList.size() > 0){
             DataManager.newInstance().findTaxonomy(message,this);
-
+            DataManager.newInstance().findCitiesLatLong(new DataManager.FlightCodeCallback() {
+                @Override
+                public void onFlightCodeFound(String code) {
+                    Log.d("tony1", "Code"+code);
+                }
+            });
         }
 
     }
