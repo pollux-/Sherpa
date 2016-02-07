@@ -1,6 +1,10 @@
 package com.pollux.sherpa.io;
 
-import com.pollux.sherpa.model.AlchemyVo;
+import com.pollux.sherpa.model.AirportDataResponse;
+import com.pollux.sherpa.model.AlchemyResponse;
+import com.pollux.sherpa.model.LatLongResponse;
+import com.pollux.sherpa.model.NearbyPlacesResponse;
+import com.pollux.sherpa.model.TaxoResponse;
 import com.pollux.sherpa.model.TravelRequest;
 import com.pollux.sherpa.model.TripSearchResponse;
 
@@ -17,6 +21,19 @@ public interface SherpaEndpoint {
     @POST("/search?key=AIzaSyDlo9wpADi9DWnRZdoIMh6NuKzCVb3Wq0A")
     void getFlightDetails(@Body TravelRequest user, Callback<TripSearchResponse> responseCallback);
 
-    @GET("/text/TextGetRankedNamedEntities?text=lets go to goa&outputMode=json&apikey=21285e461cb36450a7d40b28aaa992564dd1a7bf")
-    void checkForPlace(@Query("text") String text, Callback<AlchemyVo> response);
+    @GET("/text/TextGetRankedNamedEntities?outputMode=json&apikey=21285e461cb36450a7d40b28aaa992564dd1a7bf")
+    void checkForPlace(@Query("text") String text, Callback<AlchemyResponse> responseCallback);
+
+    @GET("/TextGetRankedTaxonomy?outputMode=json&apikey=21285e461cb36450a7d40b28aaa992564dd1a7bf")
+    void getSentimentTaxonomy(@Query("text") String text, Callback<TaxoResponse> responseCallback);
+
+    @GET("/textsearch/json?key=AIzaSyDlo9wpADi9DWnRZdoIMh6NuKzCVb3Wq0A")
+    void getLatLong(@Query("query") String query, Callback<LatLongResponse> responseCallback);
+
+    @GET("/nearbysearch/json?key=AIzaSyDlo9wpADi9DWnRZdoIMh6NuKzCVb3Wq0A&radius=50000")
+    void getNearbyPlaces(@Query("location") String location, Callback<NearbyPlacesResponse> responseCallback);
+
+    @GET("/nearest-relevant?apikey=NAowoC2E8Xm0qKHmBKGb0wjr5ZbiqGVs")
+    void getAirportCode(@Query("latitude") String latitude, @Query("longitude") String longitude
+            , Callback<AirportDataResponse> responseCallback);
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="10dp" >
+
+    <RadioGroup
+        android:layout_margin="20dp"
+        android:id="@+id/radioGroup1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/places"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radio_button_selector"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Suggestions"
+            android:textColor="@drawable/radio_txt_selector" />
+
+        <RadioButton
+            android:id="@+id/flights"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radio_button_selector"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Flights"
+            android:textColor="@drawable/radio_txt_selector" />
+
+
+    </RadioGroup>
+
+</LinearLayout>
