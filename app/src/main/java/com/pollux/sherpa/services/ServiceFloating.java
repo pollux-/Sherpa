@@ -236,16 +236,19 @@ public class ServiceFloating extends Service implements BubbleLayout.OnBubbleCli
     @Override
     public void onBubbleClick(BubbleLayout bubble) {
         Log.d(TAG, "Clicked");
-        openActivity("GOA");
-
-    }
-
-    void openActivity(String text) {
         if (enable) {
             EventBus.getDefault().post(new CloseDetails());
 
             enable = false;
-        } else {
+        } else
+        {
+            enable = true;
+            openActivity("GOA");
+        }
+
+    }
+
+    void openActivity(String text) {
 
             Intent mIntent = new Intent(MyApplication.context, DetailsActivity.class);
             mIntent.putExtra(DetailsActivity.BUNDLE_MESSAGE, text);
@@ -253,8 +256,5 @@ public class ServiceFloating extends Service implements BubbleLayout.OnBubbleCli
             startActivity(mIntent);
             /*bubbleView.setX(0);
             bubbleView.setX(20);*/
-            enable = true;
-
-        }
     }
 }

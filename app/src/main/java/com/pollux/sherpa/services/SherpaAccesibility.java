@@ -116,6 +116,9 @@ public class SherpaAccesibility extends AccessibilityService
                 {
                     message = text.get(2);
                 }
+
+                Log.d(tag, message);
+                EventBus.getDefault().postSticky(new UserMessage(message));
             }
 
             else if((app==MESSENGER && event.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED)
@@ -125,6 +128,9 @@ public class SherpaAccesibility extends AccessibilityService
                 Log.d(tag, "Whats App Length = " + text.size());
                 if(text.size()>=1)
                     message = text.get(0);
+
+                Log.d(tag, message);
+                EventBus.getDefault().postSticky(new UserMessage(message));
             }
             else if((app==SMS && event.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED)
                     && currentActivity.equals("com.android.mms.ui.SingleRecipientConversationActivity"))
@@ -136,6 +142,9 @@ public class SherpaAccesibility extends AccessibilityService
                     message = text.get(1);
                     messageBug = true;
                 }
+
+                Log.d(tag, message);
+                EventBus.getDefault().postSticky(new UserMessage(message));
             }
             else
             {
@@ -154,8 +163,6 @@ public class SherpaAccesibility extends AccessibilityService
             AccessibilityRecord m;
             Log.d(tag, ussd_details);
             Log.d(tag, text.toString());
-            Log.d(tag, message);
-        EventBus.getDefault().postSticky(new UserMessage(message));
     }
     public void getTextFromNode(AccessibilityNodeInfo accessibilityNodeInfo)
     {
