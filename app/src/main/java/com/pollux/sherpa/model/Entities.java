@@ -1,0 +1,61 @@
+package com.pollux.sherpa.model;
+
+/**
+ * Created by idea on 07-02-2016.
+ */
+public class Entities
+{
+    private String text;
+
+    private String count;
+
+    private String relevance;
+
+    private String type;
+
+    public String getText ()
+    {
+        return text;
+    }
+
+    public void setText (String text)
+    {
+        this.text = text;
+    }
+
+    public String getCount ()
+    {
+        return count;
+    }
+
+    public void setCount (String count)
+    {
+        this.count = count;
+    }
+
+    public String getRelevance ()
+    {
+        return relevance;
+    }
+
+    public void setRelevance (String relevance)
+    {
+        this.relevance = relevance;
+    }
+
+    public String getType ()
+    {
+        return type;
+    }
+
+    public void setType (String type)
+    {
+        this.type = type;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ClassPojo [text = "+text+", count = "+count+", relevance = "+relevance+", type = "+type+"]";
+    }
+}
