@@ -22,9 +22,13 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends AppCompatActivity {
+import com.pollux.sherpa.messages.CloseDetails;
 
-    private static final String TAG = "MainActivity";
+import de.greenrobot.event.EventBus;
+
+public class DetailsActivity extends AppCompatActivity {
+
+    private static final String TAG = "DetailsActivity";
     public static final int PLACE = 100;
     public static final int FLIGHT = 200;
     public static long miniAppId = -1;
@@ -34,23 +38,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
-
-        airportDataTest();
+        EventBus.getDefault().register(this);
 
         replaceFragment(PLACE);
         setListeners();
 
 
-       /* Intent intent = new Intent(MainActivity.this, FloatingActivity.class);
-        TooleapPopOutMiniApp miniApp = new TooleapPopOutMiniApp(MainActivity.this, intent);
+       /*  Intent intent = new Intent(DetailsActivity.this, FloatingActivity.class);
+       TooleapPopOutMiniApp miniApp = new TooleapPopOutMiniApp(DetailsActivity.this, intent);
         miniApp.contentTitle = "Sherpa";
         miniApp.notificationText = "Hello! I'm Your Sherpa";
         miniApp.bubbleBackgroundColor = 0x78FFFFFF;
-        Tooleap tooleap = Tooleap.getInstance(MainActivity.this);
+        Tooleap tooleap = Tooleap.getInstance(DetailsActivity.this);
         tooleap.removeAllMiniApps();
-        miniAppId = tooleap.addMiniApp(miniApp);
-        */
+        miniAppId = tooleap.addMiniApp(miniApp);*/
 
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    public void onEvent(CloseDetails m) {
+        finish();
     }
 
     private void setListeners() {

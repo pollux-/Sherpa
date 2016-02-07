@@ -10,7 +10,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityRecord;
 import android.widget.TextView;
 
-import com.pollux.sherpa.MainActivity;
+import com.pollux.sherpa.DetailsActivity;
 import com.pollux.sherpa.messages.UserMessage;
 import com.tooleap.sdk.Tooleap;
 import com.tooleap.sdk.TooleapMiniApp;
@@ -122,7 +122,7 @@ public class SherpaAccesibility extends AccessibilityService
             }
 
             else if((app==MESSENGER && event.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED)
-                    && currentActivity.equals("com.facebook.messenger.neue.MainActivity"))
+                    && currentActivity.equals("com.facebook.messenger.neue.DetailsActivity"))
             {
                 getTextFromNode(event.getSource());
                 Log.d(tag, "Whats App Length = " + text.size());
@@ -159,9 +159,9 @@ public class SherpaAccesibility extends AccessibilityService
             Log.d(tag, text.toString());
             Log.d(tag, message);
         Tooleap tooleap = Tooleap.getInstance(this);
-        TooleapMiniApp miniApp = tooleap.getMiniApp(MainActivity.miniAppId);
+        TooleapMiniApp miniApp = tooleap.getMiniApp(DetailsActivity.miniAppId);
         miniApp.notificationText = message;
-        tooleap.updateMiniAppAndNotify(MainActivity.miniAppId, miniApp);
+        tooleap.updateMiniAppAndNotify(DetailsActivity.miniAppId, miniApp);
         EventBus.getDefault().post(new UserMessage(message));
     }
     public void onEvent()

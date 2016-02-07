@@ -22,15 +22,17 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+
+    compile files('libs/tooleap-sdk-0.9.6.jar')
+
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.android.support:appcompat-v7:23.1.1'
-
-    compile 'com.android.support:cardview-v7:21.0.+'
-    compile 'com.android.support:recyclerview-v7:21.0.+'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.flipkart.springyheads:library:0.9.6'
-    compile files('libs/tooleap-sdk-0.9.6.jar')
-
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.txusballesteros:bubbles:1.2.1'
 }
