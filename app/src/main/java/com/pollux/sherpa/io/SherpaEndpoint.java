@@ -27,7 +27,7 @@ public interface SherpaEndpoint {
     @GET("/TextGetRankedTaxonomy?outputMode=json&apikey=21285e461cb36450a7d40b28aaa992564dd1a7bf")
     void getSentimentTaxonomy(@Query("text") String text, Callback<TaxoResponse> responseCallback);
 
-    @GET("/textsearch/json?key=AIzaSyDlo9wpADi9DWnRZdoIMh6NuKzCVb3Wq0A")
+    @GET("/textsearch/json?key=AIzaSyAOFqhu6CSeTQkTEsGiq670YOz0SaLd2sg")
     void getLatLong(@Query("query") String query, Callback<PlaceDataResponse> responseCallback);
 
     @GET("/nearbysearch/json?key=AIzaSyDlo9wpADi9DWnRZdoIMh6NuKzCVb3Wq0A&radius=50000")

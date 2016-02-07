@@ -117,7 +117,7 @@ public class DetailsActivity extends AppCompatActivity implements DataManager.An
 
     @Override
     public void onEventFound() {
-        replaceFragment(FLIGHT);
+        replaceFragment(PLACE);
         setListeners();
         findViewById(R.id.progress).setVisibility(View.GONE);
 

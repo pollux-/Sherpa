@@ -29,14 +29,20 @@ public class DataManager {
     private List<String> destinationAirportCodes;
     private List<PlaceDataResponse.Results> placeDataList;
 
-    public interface AnalysisCallback{
+    public interface AnalysisCallback {
         void onCityFound(List<String> citiesList);
+
         void onTaxamonyFound(List<String> eventSearchList);
+
         void onEventFound();
     }
 
-    public interface FlightCodeCallback{
+    public interface FlightCodeCallback {
         void onFlightCodeFound(String code);
+    }
+
+    public List<PlaceDataResponse.Results> getPlaceDataList() {
+        return placeDataList;
     }
 
     private DataManager() {
@@ -66,7 +72,7 @@ public class DataManager {
                         citiesList.add(singleEnt.getText());
                     }
                 }
-                if(callback != null)
+                if (callback != null)
                     callback.onCityFound(citiesList);
             }
 
@@ -87,10 +93,14 @@ public class DataManager {
                     String[] actions = singleTaxo.getLabel().split("/");
 
                     for (int i = 0; i < citiesList.size(); i++) {
-                        eventSearchList.add(actions[0] + " and " + actions[1] + " in " + citiesList.get(i));
+                        try {
+                            eventSearchList.add(actions[1] + " and " + actions[2] + " in " + citiesList.get(i));
+                        } catch (Exception e) {
+
+                        }
                     }
-                    if(callback != null)
-                    callback.onTaxamonyFound(eventSearchList);
+                    if (callback != null)
+                        callback.onTaxamonyFound(eventSearchList);
                 }
             }
 
@@ -102,6 +112,7 @@ public class DataManager {
     }
 
     public void findCitiesLatLong(final FlightCodeCallback callback) {
+
         destinationAirportCodes.clear();
         PlacesClient placesClient = new PlacesClient();
         for (int i = 0; i < citiesList.size(); i++) {
@@ -118,7 +129,7 @@ public class DataManager {
                                 public void success(AirportDataResponse airportDataResponse, Response response) {
                                     Log.d("tony", "onSuccess");
                                     destinationAirportCodes.add(airportDataResponse.getAirport());
-                                    if(callback != null)
+                                    if (callback != null)
                                         callback.onFlightCodeFound(airportDataResponse.getAirport());
 
                                 }
@@ -146,11 +157,13 @@ public class DataManager {
             placesClient.getPlacesServices().getLatLong(eventSearchList.get(i), new Callback<PlaceDataResponse>() {
                 @Override
                 public void success(PlaceDataResponse placeDataResponse, Response response) {
-                    for (PlaceDataResponse.Results singleResults : placeDataResponse.getResults()) {
-                        placeDataList.add(singleResults);
+                    for (int j = 0; j < placeDataResponse.getResults().length; j++) {
+                        if (j == 3)
+                            break;
+                        placeDataList.add(placeDataResponse.getResults()[j]);
 
                     }
-                    if(analysisCallback!=null){
+                    if (analysisCallback != null) {
                         analysisCallback.onEventFound();
                     }
                 }

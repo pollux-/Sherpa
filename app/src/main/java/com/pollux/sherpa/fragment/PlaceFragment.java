@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.pollux.sherpa.R;
 import com.pollux.sherpa.adapter.PlaceAdapter;
+import com.pollux.sherpa.manager.DataManager;
 
 /**
  * Created by SPARK on 07/02/16.
@@ -34,6 +35,6 @@ public class PlaceFragment extends Fragment {
         placeList = (RecyclerView) rootView.findViewById(R.id.flight_list);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         placeList.setLayoutManager(manager);
-        placeList.setAdapter(new PlaceAdapter(getActivity(),null));
+        placeList.setAdapter(new PlaceAdapter(getActivity(), DataManager.newInstance().getPlaceDataList()));
     }
 }
