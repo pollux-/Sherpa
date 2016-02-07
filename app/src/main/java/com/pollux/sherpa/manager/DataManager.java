@@ -1,5 +1,6 @@
 package com.pollux.sherpa.manager;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,6 +14,7 @@ import com.pollux.sherpa.model.AirportDataResponse;
 import com.pollux.sherpa.model.AlchemyResponse;
 import com.pollux.sherpa.model.PlaceDataResponse;
 import com.pollux.sherpa.model.TaxoResponse;
+import com.pollux.sherpa.utils.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -86,89 +88,17 @@ public class DataManager {
                         citiesList.add(singleEnt.getText());
                     }
                 }
-                if (callback != null)
-                {
+                if (callback != null) {
                     callback.onCityFound(citiesList);
 
-                    Log.d("TWITTER",citiesList.toString());
-                    if(citiesList.size()>0)
-                    {
-                        TwitterSentimentClient mSentimentClient = new TwitterSentimentClient();
-                        mSentimentClient.getServiceEndpoint().getSentiment(citiesList.get(0), new Callback<Response>()
-                        {
-                            @Override
-                            public void success(Response response, Response response2)
-                            {
-                                Log.d("TWITTER","SUCCESS Sentiment");
-                                TypedInput m = response2.getBody();
-                                String mJson = "";
-                                if (m != null)
-                                {
-                                    BufferedReader reader = null;
-                                    StringBuilder sb = new StringBuilder();
-                                    try
-                                    {
-                                        reader = new BufferedReader(new InputStreamReader(m.in()));
-                                        String line;
-                                        try
-                                        {
-                                            while ((line = reader.readLine()) != null)
-                                            {
-                                                sb.append(line);
-                                            }
-                                        } catch (IOException e)
-                                        {
-                                            e.printStackTrace();
-                                        }
-                                    } catch (IOException e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                                    mJson = sb.toString();
-                                } else
-                                {
-                                    mJson = "Empty Response";
-                                }
-
-                                Log.d("TWITTER", "RES: " + mJson);
-                                Pattern pattern = Pattern.compile("\\:0\\}");
-                                Matcher matcher = pattern.matcher(mJson);
-                                int neutral = 0;
-                                while (matcher.find()) neutral++;
-                                pattern = Pattern.compile("\\:1\\}");
-                                matcher = pattern.matcher(mJson);
-                                int positive = 0;
-                                while (matcher.find()) positive++;
-                                pattern = Pattern.compile("\\:\\-1\\}");
-                                matcher = pattern.matcher(mJson);
-                                int negative = 0;
-                                while (matcher.find()) negative++;
-                                Random rand = new Random();
+                    Log.d("TWITTER", citiesList.toString());
+                    if (citiesList.size() > 0) {
 
 
-                                if (negative == 0) negative = rand.nextInt(100) + 1;
-                                if (positive == 0) positive = rand.nextInt(100) + 1;
-                                if (neutral == 0) neutral = rand.nextInt(100) + 1;
-                                EventBus.getDefault().postSticky(new SentimentalMessage(positive, negative, neutral,citiesList.get(0)));
-                            }
+                        Constants.CITY =  citiesList.get(0);
 
-                            @Override
-                            public void failure(RetrofitError error)
-                            {
-                                Log.d("TWITTER", "FAILED");
-                                int neutral, positive, negative;
-                                Random rand = new Random();
-                                negative = rand.nextInt(100) + 1;
-                                positive = rand.nextInt(100) + 1;
-                                neutral = rand.nextInt(100) + 1;
-                                EventBus.getDefault().postSticky(new SentimentalMessage(positive, negative, neutral,citiesList.get(0)));
-
-                            }
-                        });
-                    }
-                    else
-                    {
-                        Log.d("TWITTER","NO Cities Found");
+                    } else {
+                        Log.d("TWITTER", "NO Cities Found");
                     }
                 }
 
@@ -187,11 +117,24 @@ public class DataManager {
         alchemyTaxoClient.getAlchemyTaxoServices().getSentimentTaxonomy(userInput, new Callback<TaxoResponse>() {
             @Override
             public void success(TaxoResponse taxoResponse, Response response) {
+                for (int j = 0; j < citiesList.size(); j++) {
+                    eventSearchList.add("places in" + citiesList.get(j));
+                }
                 for (TaxoResponse.Taxonomy singleTaxo : taxoResponse.getTaxonomy()) {
+
+                    if (singleTaxo.getLabel().contains("/travel/tourist destinations/")
+                            || singleTaxo.getLabel().contains("/travel/hotels")
+                            || singleTaxo.getLabel().contains("/travel/tourist facilities/hotel")) {
+                        if (callback != null)
+                            callback.onTaxamonyFound(eventSearchList);
+                        continue;
+                    }
+
                     String[] actions = singleTaxo.getLabel().split("/");
 
                     for (int i = 0; i < citiesList.size(); i++) {
                         try {
+
                             eventSearchList.add(actions[1] + " and " + actions[2] + " in " + citiesList.get(i));
                         } catch (Exception e) {
 
@@ -217,8 +160,7 @@ public class DataManager {
             placesClient.getPlacesServices().getLatLong(citiesList.get(i), new Callback<PlaceDataResponse>() {
                 @Override
                 public void success(PlaceDataResponse placeDataResponse, Response response) {
-
-                    if (placeDataResponse == null)
+                    if(placeDataResponse == null && placeDataResponse.getResults()[0]== null)
                         return;
 
                     final AirportDataClient airportDataClient = new AirportDataClient();
@@ -260,11 +202,16 @@ public class DataManager {
         placeDataList.clear();
         PlacesClient placesClient = new PlacesClient();
         for (int i = 0; i < eventSearchList.size(); i++) {
+            Log.d("tony", "event=" + eventSearchList.get(i));
+            if(i == 1)
+                break;
             placesClient.getPlacesServices().getLatLong(eventSearchList.get(i), new Callback<PlaceDataResponse>() {
                 @Override
                 public void success(PlaceDataResponse placeDataResponse, Response response) {
+
+
                     for (int j = 0; j < placeDataResponse.getResults().length; j++) {
-                        if (j == 3)
+                        if (j == 10)
                             break;
                         placeDataList.add(placeDataResponse.getResults()[j]);
 

@@ -33,6 +33,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
         startService(new Intent(ConfigActivity.this, ServiceFloating.class));
+        finish();
     }
 
 

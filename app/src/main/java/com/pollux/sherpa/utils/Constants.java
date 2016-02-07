@@ -6,4 +6,5 @@ package com.pollux.sherpa.utils;
 public class Constants
 {
     public final static String serviceId = "com.builders.mothertongue/.services.SherpaAccessibility";
+    public static  String CITY = "GOA";
 }

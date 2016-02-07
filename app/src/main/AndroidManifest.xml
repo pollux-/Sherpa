@@ -59,7 +59,7 @@
 
         <activity
             android:name=".ConfigActivity"
-            android:label="@string/title_activity_config"
+            android:label="Sherpa"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
