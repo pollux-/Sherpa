@@ -106,7 +106,7 @@ public class DetailsActivity extends AppCompatActivity implements DataManager.An
             DataManager.newInstance().findCitiesLatLong(new DataManager.FlightCodeCallback() {
                 @Override
                 public void onFlightCodeFound(String code) {
-                    Log.d("tony", "Code"+code);
+                    Log.d("tony1", "Code"+code);
                 }
             });
         }

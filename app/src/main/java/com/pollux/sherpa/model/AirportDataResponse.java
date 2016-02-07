@@ -6,11 +6,13 @@ package com.pollux.sherpa.model;
 public class AirportDataResponse {
     private String airport;
 
-    public String getAirport() {
+    public String getAirport ()
+    {
         return airport;
     }
 
-    public void setAirport(String airport) {
+    public void setAirport (String airport)
+    {
         this.airport = airport;
     }
 
