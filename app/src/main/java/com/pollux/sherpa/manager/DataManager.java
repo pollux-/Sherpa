@@ -90,80 +90,85 @@ public class DataManager {
                 {
                     callback.onCityFound(citiesList);
                     Log.d("TWITTER",citiesList.toString());
-                    TwitterSentimentClient mSentimentClient =  new TwitterSentimentClient();
-                    mSentimentClient.getServiceEndpoint().getSentiment(citiesList.get(0), new Callback<Response>()
+                    if(citiesList.size()>0)
                     {
-                        @Override
-                        public void success(Response response, Response response2)
+                        TwitterSentimentClient mSentimentClient = new TwitterSentimentClient();
+                        mSentimentClient.getServiceEndpoint().getSentiment(citiesList.get(0), new Callback<Response>()
                         {
-                            TypedInput m = response2.getBody();
-                            String mJson = "";
-                            if(m!=null)
+                            @Override
+                            public void success(Response response, Response response2)
                             {
-                                BufferedReader reader = null;
-                                StringBuilder sb = new StringBuilder();
-                                try {
-                                    reader = new BufferedReader(
-                                            new InputStreamReader(m.in()));
-                                    String line;
-                                    try {
-                                        while ((line = reader.readLine()) != null) {
-                                            sb.append(line);
+                                Log.d("TWITTER","SUCCESS Sentiment");
+                                TypedInput m = response2.getBody();
+                                String mJson = "";
+                                if (m != null)
+                                {
+                                    BufferedReader reader = null;
+                                    StringBuilder sb = new StringBuilder();
+                                    try
+                                    {
+                                        reader = new BufferedReader(new InputStreamReader(m.in()));
+                                        String line;
+                                        try
+                                        {
+                                            while ((line = reader.readLine()) != null)
+                                            {
+                                                sb.append(line);
+                                            }
+                                        } catch (IOException e)
+                                        {
+                                            e.printStackTrace();
                                         }
-                                    } catch (IOException e) {
+                                    } catch (IOException e)
+                                    {
                                         e.printStackTrace();
                                     }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                    mJson = sb.toString();
+                                } else
+                                {
+                                    mJson = "Empty Response";
                                 }
-                                mJson = sb.toString();
+
+                                Log.d("TWITTER", "RES: " + mJson);
+                                Pattern pattern = Pattern.compile("\\:0\\}");
+                                Matcher matcher = pattern.matcher(mJson);
+                                int neutral = 0;
+                                while (matcher.find()) neutral++;
+                                pattern = Pattern.compile("\\:1\\}");
+                                matcher = pattern.matcher(mJson);
+                                int positive = 0;
+                                while (matcher.find()) positive++;
+                                pattern = Pattern.compile("\\:\\-1\\}");
+                                matcher = pattern.matcher(mJson);
+                                int negative = 0;
+                                while (matcher.find()) negative++;
+                                Random rand = new Random();
+
+
+                                if (negative == 0) negative = rand.nextInt(100) + 1;
+                                if (positive == 0) positive = rand.nextInt(100) + 1;
+                                if (neutral == 0) neutral = rand.nextInt(100) + 1;
+                                EventBus.getDefault().post(new SentimentalMessage(positive, negative, neutral,citiesList.get(0)));
                             }
-                            else
+
+                            @Override
+                            public void failure(RetrofitError error)
                             {
-                                mJson = "Empty Response";
+                                Log.d("TWITTER", "FAILED");
+                                int neutral, positive, negative;
+                                Random rand = new Random();
+                                negative = rand.nextInt(100) + 1;
+                                positive = rand.nextInt(100) + 1;
+                                neutral = rand.nextInt(100) + 1;
+                                EventBus.getDefault().post(new SentimentalMessage(positive, negative, neutral,citiesList.get(0)));
+
                             }
-
-                            Log.d("TWITTER","RES: "+mJson);
-                            Pattern pattern = Pattern.compile("\\:0\\}");
-                            Matcher matcher = pattern.matcher(mJson);
-                            int neutral = 0;
-                            while(matcher.find())
-                                neutral++;
-                             pattern = Pattern.compile("\\:1\\}");
-                             matcher = pattern.matcher(mJson);
-                            int positive = 0;
-                            while(matcher.find())
-                                positive++;
-                            pattern = Pattern.compile("\\:\\-1\\}");
-                            matcher = pattern.matcher(mJson);
-                            int negative = 0;
-                            while(matcher.find())
-                                negative++;
-                            Random rand = new Random();
-
-
-                            if(negative==0)
-                                negative = rand.nextInt(100) + 1;
-                            if(positive==0)
-                                positive = rand.nextInt(100) + 1;
-                            if(neutral==0)
-                                neutral = rand.nextInt(100) + 1;
-                            EventBus.getDefault().post(new SentimentalMessage(positive,negative,neutral));
-                        }
-                        @Override
-                        public void failure(RetrofitError error)
-                        {
-                            Log.d("TWITTER","FAILED");
-                            int neutral,positive,negative;
-                            Random rand = new Random();
-                                negative = rand.nextInt(100) + 1;
-                                positive = rand.nextInt(100) + 1;
-                                neutral = rand.nextInt(100) + 1;
-                            EventBus.getDefault().post(new SentimentalMessage(positive,negative,neutral));
-
-                        }
+                        });
                     }
-                 );
+                    else
+                    {
+                        Log.d("TWITTER","NO Cities Found");
+                    }
                 }
             }
 

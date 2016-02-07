@@ -35,10 +35,9 @@ public interface SherpaEndpoint {
 
     @GET("/nearest-relevant?apikey=NAowoC2E8Xm0qKHmBKGb0wjr5ZbiqGVs")
     void getAirportCode(@Query("latitude") String latitude, @Query("longitude") String longitude
-            , Callback<AirportDataResponse> responseCallback);
+            , Callback<AirportDataResponse []> responseCallback);
 
     @GET("/api/tweets")
     void getSentiment(@Query("query") String place
             , Callback<retrofit.client.Response> responseCallback);
-            , Callback<AirportDataResponse []> responseCallback);
 }

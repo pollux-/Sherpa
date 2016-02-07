@@ -7,8 +7,9 @@ public class SentimentalMessage
 {
     int pos,neg,neu;
     float posRatio,negRatio,neuRatio;
+    String city;
 
-    public SentimentalMessage(int pos, int neg, int neu)
+    public SentimentalMessage(int pos, int neg, int neu,String city)
     {
         this.pos = pos;
         this.neg = neg;
@@ -18,6 +19,12 @@ public class SentimentalMessage
         posRatio = (float)pos/(float)total;
         negRatio = (float)neg/(float)total;
         neuRatio = (float)neu/(float)total;
+        this.city = city;
+    }
+
+    public String getCity()
+    {
+        return city;
     }
 
     public float getPosRatio()
@@ -33,5 +40,19 @@ public class SentimentalMessage
     public float getNeuRatio()
     {
         return neuRatio;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "SentimentalMessage{" +
+                "pos=" + pos +
+                ", neg=" + neg +
+                ", neu=" + neu +
+                ", posRatio=" + posRatio +
+                ", negRatio=" + negRatio +
+                ", neuRatio=" + neuRatio +
+                ", city='" + city + '\'' +
+                '}';
     }
 }
